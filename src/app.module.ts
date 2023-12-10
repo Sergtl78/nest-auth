@@ -1,12 +1,27 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
+import { UserModule } from './user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { AuthModule } from './auth/auth.module';
+import { RoleModule } from './role/role.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from '@auth/guards/jwt-auth.guard';
 
 @Module({
-  imports: [UsersModule, PrismaModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    UserModule,
+    PrismaModule,
+    AuthModule,
+    RoleModule,
+    CacheModule.register(),
+    ConfigModule.forRoot({ isGlobal: true }),
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}
