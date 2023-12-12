@@ -42,6 +42,8 @@ export class AuthService {
       this.logger.error(err);
       return null;
     });
+    console.log('user', user);
+
     if (user) {
       throw new ConflictException(
         'Пользователь с таким email уже зарегистрирован',
@@ -103,9 +105,13 @@ export class AuthService {
       },
     });
   }
-
   deleteRefreshToken(token: string) {
-    return this.prismaService.token.delete({ where: { token } });
+    return this.prismaService.token
+      .delete({ where: { token } })
+      .catch((err) => {
+        this.logger.error(err);
+        return null;
+      });
   }
 
   async providerAuth(email: string, agent: string, provider: Provider) {

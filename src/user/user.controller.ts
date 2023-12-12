@@ -17,12 +17,13 @@ import { CurrentUser } from '@lib/decorators';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiHeader,
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { DeleteResponse, UserResponse } from './responses';
 
-@ApiBearerAuth()
+@ApiBearerAuth('access-token')
 @ApiTags('user')
 @Controller('user')
 export class UserController {
@@ -36,6 +37,7 @@ export class UserController {
     return user ? new UserResponse(user) : null;
   }
 
+  @ApiHeader({ name: 'Authorization' })
   @ApiOkResponse({ type: DeleteResponse })
   @Delete(':id')
   async deleteUser(

@@ -11,7 +11,7 @@ import { UserResponse } from '@user/responses';
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   @ApiOkResponse({ type: UserResponse })
   @Post(':id')
   addAdminRole(

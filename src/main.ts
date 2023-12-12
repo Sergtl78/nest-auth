@@ -13,6 +13,14 @@ async function bootstrap() {
     .setDescription('Auth example with Yandex and Google providers')
     .setVersion('1.0')
     .addTag('auth')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'access-token',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

@@ -1,5 +1,27 @@
 version: "3.9"
 services:
+  nest-api:
+    container_name: nest-api
+    build:
+      context: .
+      target: development
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+    volumes:
+      - .:/app
+      - /app/node_modules 
+    ports:
+      - 5000:5000
+      - 9229:9229
+    command: npm run dev
+    depends_on:
+      - postgres
+    restart: always
+    networks:
+      - postgres
+
   postgres:
     container_name: postgres_container
     image: postgres:14.8-alpine3.18
@@ -33,6 +55,8 @@ services:
       - "pg_stat_statements.max=10000"
       - "-c"
       - "pg_stat_statements.track=all"
+    env_file:
+      - .env
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
