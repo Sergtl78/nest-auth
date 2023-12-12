@@ -1,5 +1,6 @@
 version: "3.9"
 services:
+# Nest.js server
   nest-api:
     container_name: nest-api
     build:
@@ -21,7 +22,7 @@ services:
     restart: always
     networks:
       - postgres
-
+# postgres DB
   postgres:
     container_name: postgres_container
     image: postgres:14.8-alpine3.18
@@ -76,7 +77,7 @@ services:
           memory: 4G
     networks:
       - postgres
-
+# PgAdmin 
   pgadmin:
     container_name: pgadmin_container
     image: dpage/pgadmin4:7.2

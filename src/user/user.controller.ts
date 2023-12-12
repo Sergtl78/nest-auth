@@ -17,7 +17,6 @@ import { CurrentUser } from '@lib/decorators';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
-  ApiHeader,
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -29,7 +28,7 @@ import { DeleteResponse, UserResponse } from './responses';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @ApiOkResponse({ type: UserResponse })
+  @ApiOkResponse({ type: [UserResponse] })
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':idOrEmail')
   async findOneUser(@Param('idOrEmail') idOrEmail: string) {
@@ -37,7 +36,17 @@ export class UserController {
     return user ? new UserResponse(user) : null;
   }
 
-  @ApiHeader({ name: 'Authorization' })
+  @ApiOkResponse({ type: UserResponse, description: 'Only of admin' })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get()
+  async findAll(@CurrentUser() user: JwtPayload) {
+    const users = await this.userService.findAll(user);
+
+    const usersResponse = users.map((user) => new UserResponse(user));
+
+    return usersResponse;
+  }
+
   @ApiOkResponse({ type: DeleteResponse })
   @Delete(':id')
   async deleteUser(

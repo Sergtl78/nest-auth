@@ -71,6 +71,14 @@ export class UserService {
     return user;
   }
 
+  async findAll(user: JwtPayload): Promise<User[]> {
+    if (!user.roles.includes(Role.ADMIN)) {
+      throw new ForbiddenException();
+    }
+    const users = await this.prismaService.user.findMany();
+    return users;
+  }
+
   async remove(id: string, user: JwtPayload) {
     if (user.id !== id && !user.roles.includes(Role.ADMIN)) {
       throw new ForbiddenException();
